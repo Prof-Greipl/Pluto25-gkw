@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Pluto25"
         tools:targetApi="34">
         <activity
+            android:name=".SignInActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
