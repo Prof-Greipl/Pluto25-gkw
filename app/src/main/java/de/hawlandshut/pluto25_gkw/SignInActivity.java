@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener
 {
-    // 3.1 Declare UI Variables
+    // 3.a Declare UI Variables
     EditText mEditTextMail;
     EditText mEditTextPassword;
     Button mButtonSignIn;
@@ -32,17 +32,21 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             return insets;
         });
 
-        // 3.2 Init UI Variable
+        // 3.b Init UI Variable
         mEditTextMail = findViewById( R.id.signInEmail );
         mEditTextPassword = findViewById( R.id.signInPassword );
         mButtonSignIn = findViewById( R.id.signInButtonSignIn );
         mButtonResetPassword = findViewById( R.id.signinButtonResetPassword);
         mButtonCreateAccount = findViewById( R.id.signInButtonCreateAccount);
 
-        // Listener für Button setzen
+        // 3.c Listener für Button setzen
         mButtonSignIn.setOnClickListener( this );
         mButtonCreateAccount.setOnClickListener( this );
         mButtonResetPassword.setOnClickListener( this );
+
+        // TODO: Only for testing - remove later
+        mEditTextMail.setText("fhgreipl@gmail.com");
+        mEditTextPassword.setText("111111");
     }
 
     @Override

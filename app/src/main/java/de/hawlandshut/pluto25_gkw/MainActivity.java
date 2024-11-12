@@ -13,9 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import de.hawlandshut.pluto25_gkw.test.Testdata;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "xxx MainActivity";
+
+    RecyclerView mRecyclerView;
+    CustomAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +35,22 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Adapter managen
+        mAdapter = new CustomAdapter();
+
+        // TODO: Remove later, only for testing
+        mAdapter.mPostList = Testdata.createPostList(30);
+
+        mRecyclerView = findViewById( R.id.recycler_view);
+        mRecyclerView.setLayoutManager( new LinearLayoutManager(this) );
+        mRecyclerView.setAdapter( mAdapter );
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(getApplication(), SignInActivity.class);
-        startActivity(intent);
         Log.d(TAG,"onStart");
     }
 
@@ -48,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.MenuMainManageAccount) {
-            Toast.makeText(getApplicationContext(), "ManageAccount...", Toast.LENGTH_LONG).show();
-            return true;
+            Intent intent = new Intent(getApplication(), ManageAccountActivity.class);
+            startActivity(intent);
         }
         else if (item.getItemId() == R.id.MenuMainHelp) {
             Toast.makeText(getApplicationContext(), "Help...", Toast.LENGTH_LONG).show();
