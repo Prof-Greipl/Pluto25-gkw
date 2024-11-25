@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Pluto25"
         tools:targetApi="34">
         <activity
+            android:name=".PostActivity"
+            android:exported="false" />
+        <activity
             android:name=".CreateAccountActivity"
             android:exported="false" />
         <activity

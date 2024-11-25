@@ -9,6 +9,12 @@
         android:title="SignIn"
         android:id="@+id/MenuMainSignIn"
         />
+
+    <item
+        android:title="Post"
+        android:id="@+id/MenuMainPost"
+        />
+
     <item
         android:title="Help"
         android:id="@+id/MenuMainHelp"/>

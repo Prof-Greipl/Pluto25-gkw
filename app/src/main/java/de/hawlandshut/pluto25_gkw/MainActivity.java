@@ -73,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (item.getItemId() == R.id.MenuMainPost) {
+            Intent intent = new Intent(getApplication(), PostActivity.class);
+            startActivity(intent);
+        }
+
         if (item.getItemId() == R.id.MenuMainHelp) {
             Toast.makeText(getApplicationContext(), "Help...", Toast.LENGTH_LONG).show();
         }
