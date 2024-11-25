@@ -67,9 +67,14 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplication(), ManageAccountActivity.class);
             startActivity(intent);
         }
-        else if (item.getItemId() == R.id.MenuMainHelp) {
+
+        if (item.getItemId() == R.id.MenuMainSignIn) {
+            Intent intent = new Intent(getApplication(), SignInActivity.class);
+            startActivity(intent);
+        }
+
+        if (item.getItemId() == R.id.MenuMainHelp) {
             Toast.makeText(getApplicationContext(), "Help...", Toast.LENGTH_LONG).show();
-            return true;
         }
         return true;
     }

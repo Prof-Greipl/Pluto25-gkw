@@ -6,6 +6,10 @@
         android:id="@+id/MenuMainManageAccount"
         />
     <item
+        android:title="SignIn"
+        android:id="@+id/MenuMainSignIn"
+        />
+    <item
         android:title="Help"
         android:id="@+id/MenuMainHelp"/>
 </menu>
