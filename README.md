@@ -15,3 +15,8 @@ Bitte bringen Sie ihre App auf diesen Stand.
 Stand: Abschluss von Chapter 9. Noch selbst zu implementieren:
 - CreateAccountActivity (9.7)
 - PostActivity (9.8)
+
+## Termin 4 (25.11.2024)
+Stand: Abschluss von Chapter 11.4, noch ohne Reauthentication 
+(http://greipl.haw-landshut.de/pluto25/authentication-with-firebaseauth.html#reauthentication-for-account-deletion-manageaccountactivity)
+
