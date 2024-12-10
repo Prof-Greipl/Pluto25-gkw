@@ -22,6 +22,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hawlandshut.pluto25_gkw.test.Testdata;
 
@@ -36,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     CustomAdapter mAdapter;
 
     FirebaseAuth mAuth;
+    FirebaseFirestore mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +67,20 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter( mAdapter );
 
         mAuth = FirebaseAuth.getInstance();
+        mDb = FirebaseFirestore.getInstance();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG,"onStart");
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplication(), SignInActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -77,44 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.menu_test_auth) {
-            FirebaseUser user = mAuth.getCurrentUser();
-            if ( user != null){
-                // Gültiger user
-                Toast.makeText(getApplicationContext(),
-                        "User : " + user.getEmail() +" (" + user.isEmailVerified()+")",
-                        Toast.LENGTH_LONG).show();
-            }
-            else {
-                Toast.makeText(getApplicationContext(),
-                        "No user authenticated",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-
-        if (item.getItemId() == R.id.menu_create_user) {
-            doCreateUser(TEST_MAIL, TEST_PASSWORD);
-        }
-
-        if (item.getItemId() == R.id.menu_sign_in) {
-            doSignInUser(TEST_MAIL, TEST_PASSWORD);
-        }
-
-        if (item.getItemId() == R.id.menu_sign_out) {
-            doSignOut();
-        }
-
-        if (item.getItemId() == R.id.menu_delete) {
-            doDeleteUser();
-        }
-
-        if (item.getItemId() == R.id.menu_password_reset_email) {
-            doSendPasswordResetEmail(TEST_MAIL);
-        }
-
-        if (item.getItemId() == R.id.menu_verification_mail) {
-            doSendEmailVerification();
+        if (item.getItemId() == R.id.MenuMainPost) {
+            Intent intent = new Intent(getApplication(), PostActivity.class);
+            startActivity(intent);
         }
 
         if (item.getItemId() == R.id.MenuMainManageAccount) {
@@ -122,21 +102,30 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        if (item.getItemId() == R.id.MenuMainSignIn) {
-            Intent intent = new Intent(getApplication(), SignInActivity.class);
-            startActivity(intent);
+        if (item.getItemId() == R.id.MenuMainTestWrite) {
+            Map<String, Object> testMap = new HashMap<>();
+            testMap.put("key_str", "datastring");
+            testMap.put("key_float2", 1.5);
+            testMap.put("mein_int", 1);
+            testMap.put("key_date", new Date());
+
+            mDb.collection("users").add( testMap )
+                    .addOnCompleteListener(this,
+                            new OnCompleteListener<DocumentReference>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    if (task.isSuccessful()){
+                                        DocumentReference ref = task.getResult();
+                                        Log.d(TAG, "DocumentSnapshot added with ID: " + ref.getId());
+                                    } else {
+                                        Log.d(TAG, "Failed : "
+                                                + task.getException().getMessage().toString() );
+                                    }
+                                }
+                            });
+
         }
 
-
-
-        if (item.getItemId() == R.id.MenuMainPost) {
-            Intent intent = new Intent(getApplication(), PostActivity.class);
-            startActivity(intent);
-        }
-
-        if (item.getItemId() == R.id.MenuMainHelp) {
-            Toast.makeText(getApplicationContext(), "Help...", Toast.LENGTH_LONG).show();
-        }
         return true;
     }
 

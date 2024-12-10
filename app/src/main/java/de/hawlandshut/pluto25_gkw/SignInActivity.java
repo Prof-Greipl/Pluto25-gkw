@@ -8,13 +8,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener
 {
+    FirebaseAuth mAuth;
     // 3.a Declare UI Variables
     EditText mEditTextMail;
     EditText mEditTextPassword;
@@ -33,6 +41,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             return insets;
         });
 
+        mAuth = FirebaseAuth.getInstance();
+
         // 3.b Init UI Variable
         mEditTextMail = findViewById( R.id.signInEmail );
         mEditTextPassword = findViewById( R.id.signInPassword );
@@ -47,7 +57,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         // TODO: Only for testing - remove later
         mEditTextMail.setText("fhgreipl@gmail.com");
-        mEditTextPassword.setText("111111");
+        mEditTextPassword.setText("123456");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            finish();
+        }
     }
 
     @Override
@@ -72,10 +91,57 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void doResetPassword() {
-        Toast.makeText(getApplicationContext(), "Pressed Reset Password", Toast.LENGTH_LONG).show();
+        String email = mEditTextMail.getText().toString();
+        mAuth.sendPasswordResetEmail( email )
+                .addOnCompleteListener(this,
+                        new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "E-Mail sent",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Sending failed : " + task.getException().getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
     }
 
     private void doSignIn() {
-        Toast.makeText(getApplicationContext(), "Pressed SignIn Button", Toast.LENGTH_LONG).show();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if ( user != null){ // Should never happen.
+            Toast.makeText(getApplicationContext(),
+                    "Please sign out first :" +  user.getEmail(),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String email, password;
+        email = mEditTextMail.getText().toString();
+        password = mEditTextPassword.getText().toString();
+        // Add validations! (Exercise)
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this,
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "User signed in.",
+                                            Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Sign in failed : " + task.getException().getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
     }
 }
