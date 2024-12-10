@@ -20,3 +20,9 @@ Stand: Abschluss von Chapter 9. Noch selbst zu implementieren:
 Stand: Abschluss von Chapter 11.4, noch ohne Reauthentication 
 (http://greipl.haw-landshut.de/pluto25/authentication-with-firebaseauth.html#reauthentication-for-account-deletion-manageaccountactivity)
 
+## Termin 5 (10.12.2024)
+Stand: Bis incl. 13.1.3 (http://greipl.haw-landshut.de/pluto25/firestore.html#write-test)
+
+
+
+
