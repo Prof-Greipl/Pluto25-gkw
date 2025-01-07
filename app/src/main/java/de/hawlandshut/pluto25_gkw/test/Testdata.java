@@ -23,8 +23,8 @@ public class Testdata {
                     "Author " + i,
                     "Title " + i,
                     body, "key" + i,
-                    c.getTime(),
-                    new HashMap() ));
+                    c.getTime()
+                     ));
         }
         return postList;
     }

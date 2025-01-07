@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,12 +24,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hawlandshut.pluto25_gkw.model.Post;
 import de.hawlandshut.pluto25_gkw.test.Testdata;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     FirebaseFirestore mDb;
+    ListenerRegistration mListenerRegistration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
         // Adapter managen
         mAdapter = new CustomAdapter();
 
-        // TODO: Remove later, only for testing
-        mAdapter.mPostList = Testdata.createPostList(30);
-
         mRecyclerView = findViewById( R.id.recycler_view);
         mRecyclerView.setLayoutManager( new LinearLayoutManager(this) );
         mRecyclerView.setAdapter( mAdapter );
@@ -77,11 +83,51 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null){
+            if (mListenerRegistration != null){
+                // Delete the listener
+                mListenerRegistration.remove();
+            }
             Intent intent = new Intent(getApplication(), SignInActivity.class);
             startActivity(intent);
         }
-
+        else{
+            mListenerRegistration = createMyEventListener();
+            Log.d(TAG, "Listener created.");
+        }
     }
+
+    ListenerRegistration createMyEventListener(){
+        // Step 1:
+        Query query = mDb.collection( "posts")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(5);
+
+        // Step 2: Define, how you want to process an info from the listener
+        EventListener<QuerySnapshot> listener = new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                Log.d(TAG, "Documents received : " + snapshot.size());
+
+                // Delete all entries in mPostList
+                mAdapter.mPostList.clear();
+
+                for (QueryDocumentSnapshot doc: snapshot){
+                    Log.d(TAG, "Received post with ID " + doc.getId()+ " Email : " + doc.get("email") );
+
+                    // Create post from doc...
+                    Post newPost = Post.fromDocument( doc );
+
+                    // .. and add it to mPostlist.
+                    mAdapter.mPostList.add( newPost );
+                }
+
+                // Inform adapter to refresh UI, since PostList has changed
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+        // Step 3: Link listener qwith query and return the listenerRegistration
+        return query.addSnapshotListener(listener);
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             testMap.put("key_float2", 1.5);
             testMap.put("mein_int", 1);
             testMap.put("key_date", new Date());
+            Log.d(TAG, "Date in testwrite :  " + new Date());
 
             mDb.collection("users").add( testMap )
                     .addOnCompleteListener(this,
