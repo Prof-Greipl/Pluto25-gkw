@@ -6,7 +6,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Date;
-import java.util.HashMap;
+
 
 public class Post {
     private static final String TAG = "xxx Post.java";
@@ -17,9 +17,7 @@ public class Post {
     public String body;
     public Date createdAt;
     public String firestoreKey;
-
-
-
+    
     public Post(String uid,
                 String email,
                 String title,

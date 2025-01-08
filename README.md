@@ -23,6 +23,8 @@ Stand: Abschluss von Chapter 11.4, noch ohne Reauthentication
 ## Termin 5 (10.12.2024)
 Stand: Bis incl. 13.1.3 (http://greipl.haw-landshut.de/pluto25/firestore.html#write-test)
 
+## Termin 5 (07.01.2025)
+Stand: Bis incl. 13.7 (Lesen von Firestore)
 
 
 
